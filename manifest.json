@@ -1,47 +1,39 @@
 {
   "name": "الليرة 24",
   "short_name": "الليرة 24",
-  "description": "أسعار الذهب والعملات لحظة بلحظة في سوريا والعالم. حاسبة تحويل العملات والذهب.",
-  
-  // نستخدم المسار المطلق "/" لأنه يعمل بكفاءة مع PWABuilder ويحل مشاكل التفسير
-  "start_url": "/", 
+  "description": "أسعار الذهب والعملات لحظة بلحظة.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#163300",
   "theme_color": "#2ed06e",
   "orientation": "portrait-primary",
-  "categories": ["finance", "tools", "productivity"],
-  
-  // حل مشكلة ID
-  "id": "/", 
-  
+  "id": "./index.html",
   "icons": [
     {
-      // الأيقونة 192x192: نوع "ANY" ومسار مطلق
-      "src": "/assets/icon-192.png",
+      "src": "./assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any" 
+      "purpose": "any"
     },
     {
-      // الأيقونة 512x512: نوع "MASKABLE" (مطلوب لمتجر بلاي) ومسار مطلق
-      "src": "/assets/icon-512.png",
+      "src": "./assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable" 
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "/assets/screenshot1.png",
+      "src": "./assets/screenshot1.png",
       "sizes": "1080x1920",
       "type": "image/png",
-      "platform": "narrow"
+      "form_factor": "wide"
     },
     {
-      "src": "/assets/screenshot2.png",
+      "src": "./assets/screenshot2.png",
       "sizes": "1080x1920",
       "type": "image/png",
-      "platform": "narrow"
+      "form_factor": "narrow"
     }
   ]
 }
