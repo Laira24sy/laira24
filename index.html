@@ -191,6 +191,39 @@
                 transform: translateY(-10px);
             }
         }
+
+        /* Desktop Background Enhancement */
+        @media (min-width: 768px) {
+            body {
+                background-color: #020b00;
+                background-image:
+                    radial-gradient(circle at 15% 50%, rgba(46, 208, 110, 0.08), transparent 25%),
+                    radial-gradient(circle at 85% 30%, rgba(159, 232, 112, 0.05), transparent 25%),
+                    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+                background-position: 0 0, 0 0, center center, center center;
+                background-attachment: fixed;
+            }
+        }
+
+        /* Scrollbar Styling for Desktop */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #020b00;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1f3d05;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2ed06e;
+        }
     </style>
 
     <script>
@@ -2226,7 +2259,7 @@
             );
 
             return (
-                <div className="min-h-screen bg-gray-100 dark:bg-gray-900 max-w-md mx-auto relative shadow-2xl overflow-hidden">
+                <div className="min-h-screen bg-gray-100 dark:bg-gray-900 max-w-md mx-auto relative shadow-2xl overflow-hidden md:border-x md:border-white/5">
                     <InstallPrompt />
                     {showSplash && <SplashScreen fading={splashFading} />}
 
@@ -2246,4 +2279,4 @@
     </script>
 </body>
 
-    </html>
+</html>
