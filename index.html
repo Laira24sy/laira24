@@ -957,6 +957,7 @@
         );
 
         // --- Featured Rate Card (New) ---
+        // --- Featured Rate Card (New - ENHANCED) ---
         const FeaturedRateCard = ({ pinned, currencyData }) => {
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isVisible, setIsVisible] = useState(true);
@@ -973,7 +974,8 @@
                 // Progress Bar Animation
                 setProgress(0);
                 const progressInterval = setInterval(() => {
-                    setProgress(old => Math.min(old + (100 / 50), 100)); // 50 steps of 100ms = 5000ms
+                    // Update for 7 seconds (70 steps of 100ms)
+                    setProgress(old => Math.min(old + (100 / 70), 100));
                 }, 100);
 
                 const cycleInterval = setInterval(() => {
@@ -983,7 +985,7 @@
                         setIsVisible(true); // Fade in
                         setProgress(0);
                     }, 500); // 0.5s transition
-                }, 5000); // 5s per slide
+                }, 7000); // 7s per slide (Modified from 5s)
 
                 return () => {
                     clearInterval(cycleInterval);
@@ -1001,59 +1003,82 @@
             const isUp = currency.stats.direction === 'up';
             const isDown = currency.stats.direction === 'down';
 
-            // Dynamic Colors based on trend
+            // ENHANCED DYNAMIC STYLES
             const themeColor = isUp ? 'emerald' : isDown ? 'rose' : 'gray';
-            const bgGradient = isUp
-                ? 'from-emerald-500/10 to-emerald-500/5'
-                : isDown
-                    ? 'from-rose-500/10 to-rose-500/5'
-                    : 'from-gray-500/10 to-gray-500/5';
 
-            const borderColor = isUp ? 'border-emerald-500/20' : isDown ? 'border-rose-500/20' : 'border-gray-500/20';
-            const textColor = isUp ? 'text-emerald-500' : isDown ? 'text-rose-500' : 'text-gray-500';
+            // Richer Gradients for better contrast
+            const bgGradient = isUp
+                ? 'from-emerald-600/20 via-emerald-900/10 to-transparent'
+                : isDown
+                    ? 'from-rose-600/20 via-rose-900/10 to-transparent'
+                    : 'from-gray-600/20 via-gray-900/10 to-transparent';
+
+            // Stronger Borders
+            const borderColor = isUp
+                ? 'border-emerald-500/30'
+                : isDown
+                    ? 'border-rose-500/30'
+                    : 'border-gray-500/30';
+
+            // Text Colors
+            const textColor = isUp ? 'text-emerald-500' : isDown ? 'text-rose-500' : 'text-gray-400';
+
+            // Glow/Shadow Effect
+            const shadowClass = isUp
+                ? 'shadow-[0_0_30px_-10px_rgba(16,185,129,0.15)] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]'
+                : isDown
+                    ? 'shadow-[0_0_30px_-10px_rgba(244,63,94,0.15)] hover:shadow-[0_0_40px_-10px_rgba(244,63,94,0.3)]'
+                    : 'shadow-lg';
 
             return (
-                <div className="mb-6 relative">
-                    <div className={`relative overflow-hidden rounded-[2rem] bg-gradient-to-br ${bgGradient} border ${borderColor} backdrop-blur-sm transition-all duration-500`}>
-                        {/* Progress Bar Top */}
-                        <div className="absolute top-0 left-0 h-1 bg-gray-200 dark:bg-gray-700 w-full opacity-30">
-                            <div className={`h-full ${isUp ? 'bg-emerald-500' : isDown ? 'bg-rose-500' : 'bg-brand-primary'} transition-all duration-100 ease-linear`} style={{ width: `${progress}%` }}></div>
+                <div className="mb-6 relative perspective-1000">
+                    <div className={`relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br ${bgGradient} border ${borderColor} backdrop-blur-md transition-all duration-500 ${shadowClass} group`}>
+
+                        {/* Dynamic Background Mesh Effect */}
+                        <div className={`absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[80px] opacity-20 transition-colors duration-700 ${isUp ? 'bg-emerald-500' : isDown ? 'bg-rose-500' : 'bg-gray-500'}`}></div>
+
+                        {/* Progress Bar Top - Thicker & Glowy */}
+                        <div className="absolute top-0 left-0 h-1.5 bg-gray-200/20 dark:bg-gray-700/30 w-full">
+                            <div className={`h-full ${isUp ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' : isDown ? 'bg-rose-500 shadow-[0_0_10px_#f43f5e]' : 'bg-brand-primary'} transition-all duration-100 ease-linear rounded-r-full`} style={{ width: `${progress}%` }}></div>
                         </div>
 
-                        <div className={`p-6 transition-all duration-500 ease-in-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center text-3xl border ${borderColor}`}>
+                        <div className={`p-7 transition-all duration-500 ease-in-out ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 blur-sm'}`}>
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="flex items-center gap-5">
+                                    <div className={`w-16 h-16 rounded-[1.2rem] bg-white dark:bg-gray-800 shadow-lg flex items-center justify-center text-4xl border border-white/10 ${isUp ? 'ring-2 ring-emerald-500/20' : isDown ? 'ring-2 ring-rose-500/20' : ''}`}>
                                         {flag}
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-black text-gray-800 dark:text-white leading-none mb-1">{currency.name}</h3>
+                                        <h3 className="text-2xl font-black text-gray-800 dark:text-gray-100 leading-none mb-1.5">{currency.name}</h3>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-gray-400 font-mono tracking-wider">{currency.code}</span>
-                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black flex items-center gap-1 ${isUp ? 'bg-emerald-100 text-emerald-700' : isDown ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-600'}`}>
+                                            <span className="text-xs font-bold text-gray-400 font-mono tracking-wider opacity-80">{currency.code}</span>
+                                            <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-black flex items-center gap-1 shadow-sm ${isUp ? 'bg-emerald-500 text-white' : isDown ? 'bg-rose-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
                                                 {currency.stats.percent}% {isUp ? '↑' : isDown ? '↓' : '-'}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Status Indicator Pulse */}
-                                <div className={`w-3 h-3 rounded-full ${isUp ? 'bg-emerald-500' : isDown ? 'bg-rose-500' : 'bg-gray-400'} animate-pulse shadow-lg shadow-current`}></div>
+                                {/* Status Indicator Pulse - Enhanced */}
+                                <div className="relative">
+                                    <div className={`w-3 h-3 rounded-full ${isUp ? 'bg-emerald-500' : isDown ? 'bg-rose-500' : 'bg-gray-400'} shadow-[0_0_15px_currentColor]`}></div>
+                                    <div className={`absolute inset-0 w-3 h-3 rounded-full ${isUp ? 'bg-emerald-400' : isDown ? 'bg-rose-400' : 'bg-gray-400'} animate-ping opacity-75`}></div>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-[1.5fr_1fr] gap-4 items-end">
-                                {/* Buy Price - Prominent */}
+                            <div className="grid grid-cols-[1.5fr_1fr] gap-6 items-end">
+                                {/* Buy Price - Prominent & Glowing */}
                                 <div className="flex flex-col">
-                                    <span className={`text-xs font-bold mb-1 opacity-80 ${textColor}`}>سعر الشراء</span>
-                                    <div className={`text-4xl font-black num-en tracking-tighter ${textColor} drop-shadow-sm`}>
+                                    <span className={`text-xs font-bold mb-1 opacity-90 tracking-wide ${textColor}`}>سعر الشراء</span>
+                                    <div className={`text-[2.75rem] font-black num-en tracking-tighter leading-none ${textColor} drop-shadow-lg`}>
                                         {parseFloat(currency.buy_price).toLocaleString('en-US')}
                                     </div>
                                 </div>
 
-                                {/* Sell Price - Smaller */}
-                                <div className="flex flex-col items-end pb-1">
-                                    <span className="text-[10px] font-bold text-gray-400 mb-1">سعر المبيع</span>
-                                    <div className="text-xl font-bold num-en text-gray-600 dark:text-gray-300">
+                                {/* Sell Price - Compact */}
+                                <div className="flex flex-col items-end pb-1.5">
+                                    <span className="text-[10px] font-bold text-gray-400 mb-1 opacity-80">سعر المبيع</span>
+                                    <div className="text-2xl font-bold num-en text-gray-600 dark:text-gray-300 tracking-tight">
                                         {parseFloat(currency.sell_price).toLocaleString('en-US')}
                                     </div>
                                 </div>
