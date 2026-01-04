@@ -617,7 +617,7 @@
         );
 
         // --- REDESIGNED PROMO EXPORT CARD (Fixed Layout & Arabic Text) ---
-        const PromoExportCard = ({ id, title, subTitle, icon, code, sell, buy, time, isUsd, isGold }) => {
+        const PromoExportCard = ({ id, title, subTitle, icon, code, sell, buy, time, isUsd, isGold, sellLabel, buyLabel, sellPrefix, buyPrefix }) => {
             return (
                 <div
                     id={id}
@@ -700,12 +700,12 @@
                                     <div className="flex items-center gap-3 bg-red-500/10 px-4 py-2 rounded-full border border-red-500/20 mb-2">
                                         <div className="w-3 h-3 rounded-full bg-red-500"></div>
                                         {/* Fixed Label Alignment: Increased pb to lift text */}
-                                        <span className="text-gray-300 text-2xl font-bold leading-none pb-3">سعر المبيع</span>
+                                        <span className="text-gray-300 text-2xl font-bold leading-none pb-3">{sellLabel || "سعر المبيع"}</span>
                                     </div>
 
                                     <div className="flex items-baseline justify-center">
                                         <span className="text-white text-8xl font-black num-en tracking-tighter drop-shadow-md">
-                                            {isUsd ? '$' : ''}{parseFloat(sell).toLocaleString('en-US')}
+                                            {sellPrefix !== undefined ? sellPrefix : (isUsd ? '$' : '')}{parseFloat(sell).toLocaleString('en-US')}
                                         </span>
                                     </div>
                                     {isGold && <span className="text-gray-500 text-lg mt-6">ليرة سورية / غرام</span>}
@@ -720,12 +720,12 @@
                                     <div className="flex items-center gap-3 bg-brand-primary/10 px-4 py-2 rounded-full border border-brand-primary/20 mb-2">
                                         <div className="w-3 h-3 rounded-full bg-brand-primary"></div>
                                         {/* Fixed Label Alignment: Increased pb to lift text */}
-                                        <span className="text-brand-light text-2xl font-bold leading-none pb-3">سعر الشراء</span>
+                                        <span className="text-brand-light text-2xl font-bold leading-none pb-3">{buyLabel || "سعر الشراء"}</span>
                                     </div>
 
                                     <div className="flex items-baseline justify-center">
                                         <span className="text-brand-primary text-8xl font-black num-en tracking-tighter drop-shadow-[0_0_15px_rgba(46,208,110,0.4)]">
-                                            {isUsd ? '$' : ''}{parseFloat(buy).toLocaleString('en-US')}
+                                            {buyPrefix !== undefined ? buyPrefix : (isUsd ? '$' : '')}{parseFloat(buy).toLocaleString('en-US')}
                                         </span>
                                     </div>
                                     {isGold && <span className="text-gray-500 text-lg mt-6">ليرة سورية / غرام</span>}
@@ -1065,8 +1065,116 @@
             );
         };
 
+        // --- Energy Modal ---
+        const EnergyDetailModal = ({ energy, onClose, time }) => {
+            if (!energy) return null;
+            // energy object: { title, priceUSD, priceSYP, icon, iconColor, stats, code }
+            const sell = parseFloat(energy.priceUSD);
+            const buy = parseFloat(energy.priceSYP);
+            const isUp = energy.stats?.direction === 'up';
+            // Use SYP price for chart calculation to show local fluctuation
+            const chartData = useMemo(() => generateChartData(buy, 15, 0.01), [buy]);
+
+            // Map title to code for export ID and "code" badge
+            const code = energy.title.includes('بنزين') ? 'PETROL' : 'DIESEL';
+            const exportId = `export-energy-${code}`;
+
+            return (
+                <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-300" onClick={onClose}>
+
+                    {/* The Hidden Export Card */}
+                    <PromoExportCard
+                        id={exportId}
+                        title={energy.title}
+                        subTitle="نشرة أسعار المحروقات"
+                        icon={energy.icon}
+                        code={code}
+                        sell={sell}
+                        buy={buy}
+                        time={time}
+                        isUsd={false}
+                        isGold={false}
+                        sellLabel="السعر العالمي ($)"
+                        buyLabel="السعر المحلي (ل.س)"
+                        sellPrefix="$"
+                    />
+
+                    {/* MODERN POPUP DESIGN */}
+                    <div id="energy-modal-card" className="bg-white dark:bg-gray-800 w-full max-w-sm rounded-[2.5rem] p-0 shadow-2xl border border-white/20 dark:border-gray-700/50 relative overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-300" onClick={e => e.stopPropagation()}>
+
+                        {/* Dynamic Header Background */}
+                        <div className={`absolute top-0 left-0 right-0 h-48 bg-gradient-to-b ${isUp ? 'from-green-500/10' : 'from-red-500/10'} to-transparent pointer-events-none z-0`}></div>
+
+                        <div className="p-6 pb-0 relative z-10">
+                            {/* Top Bar */}
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-14 h-14 rounded-2xl bg-white dark:bg-gray-700 flex items-center justify-center text-3xl shadow-lg border border-gray-100 dark:border-gray-600 ${energy.iconColor}`}>
+                                        {energy.icon}
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-black text-gray-800 dark:text-white leading-tight">{energy.title}</h2>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded-md">{code}</span>
+                                            {energy.stats && energy.stats.direction !== 'neutral' && (
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 ${isUp ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                    {isUp ? '↑' : '↓'} {energy.stats.percent}% (USD)
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <ElegantCloseButton onClick={onClose} />
+                            </div>
+
+                            {/* Prices Big Display */}
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                {/* USD Price */}
+                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-3xl p-4 border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center relative overflow-hidden group hover:bg-white dark:hover:bg-gray-700 transition-colors shadow-sm">
+                                    <span className="text-xs text-gray-400 font-bold mb-1">السعر العالمي</span>
+                                    <span className="text-2xl font-black num-en tracking-tighter text-gray-800 dark:text-white">$ {sell}</span>
+                                </div>
+                                {/* SYP Price */}
+                                <div className="bg-brand-primary/5 dark:bg-brand-primary/10 rounded-3xl p-4 border border-brand-primary/10 flex flex-col items-center justify-center relative overflow-hidden group hover:bg-brand-primary/10 transition-colors shadow-sm">
+                                    <div className="absolute top-0 right-0 w-full h-1 bg-brand-primary/50 group-hover:bg-brand-primary transition-colors"></div>
+                                    <span className="text-xs text-brand-primary/80 font-bold mb-1">السعر المحلي</span>
+                                    <span className="text-2xl font-black num-en tracking-tighter text-brand-primary">{buy.toLocaleString('en-US')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Chart Area */}
+                        <div className="relative h-28 w-full mb-4">
+                            <LineChart data={chartData} color={isUp ? "#2ed06e" : "#ef4444"} height={110} showAxis={false} />
+                            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white dark:from-gray-800 to-transparent"></div>
+                        </div>
+
+                        {/* Actions & Info Footer */}
+                        <div className="p-6 pt-0 relative z-10 space-y-4">
+                            <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 rounded-xl px-4 py-2 border border-gray-100 dark:border-gray-700/50">
+                                <div className="text-center w-full">
+                                    <span className="block text-[9px] text-gray-400">آخر تحديث</span>
+                                    <span className="block text-xs font-bold num-en text-gray-700 dark:text-gray-200">{formatLastUpdate(time)}</span>
+                                </div>
+                            </div>
+
+                            <div className="screenshot-exclude">
+                                <button
+                                    onClick={() => handleScreenshot(exportId, code)}
+                                    className="w-full bg-gradient-to-r from-brand-dark to-[#0f2400] text-white rounded-2xl p-4 flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-lg shadow-brand-dark/20 hover:shadow-brand-primary/30 active:scale-95 group"
+                                >
+                                    <IconRenderer icon={Icons.Download} />
+                                    <span>حفظ البطاقة</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // --- Energy Card ---
-        const EnergyCard = ({ title, priceUSD, priceSYP, icon, iconColor, stats }) => {
+        const EnergyCard = ({ title, priceUSD, priceSYP, icon, iconColor, stats, onClick }) => {
             const isUp = stats?.direction === 'up';
             const isDown = stats?.direction === 'down';
 
@@ -1076,7 +1184,7 @@
             const trendGradient = isUp ? 'from-emerald-50/50 to-transparent' : isDown ? 'from-rose-50/50 to-transparent' : '';
 
             return (
-                <div className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 shadow-sm transition-all duration-300 hover:-translate-y-1 ${activeGlowClass}`}>
+                <div onClick={onClick} className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${activeGlowClass}`}>
                     {/* Trend Background Gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${trendGradient} opacity-0 ${isUp || isDown ? 'opacity-100' : 'group-hover:opacity-50'} transition-opacity duration-500 pointer-events-none dark:opacity-0`}></div>
 
@@ -1392,6 +1500,7 @@
             });
 
             const [selectedGoldCard, setSelectedGoldCard] = useState(null);
+            const [selectedEnergy, setSelectedEnergy] = useState(null);
             const [transferService, setTransferService] = useState('global');
             // --- Transfer Center State ---
             const [transferAmount, setTransferAmount] = useState('');
@@ -1685,6 +1794,14 @@
                                                             icon={<IconRenderer icon={Icons.Fuel} />}
                                                             iconColor="text-orange-500 dark:text-orange-400"
                                                             stats={usdRate.stats}
+                                                            onClick={() => setSelectedEnergy({
+                                                                title: "البنزين (أوكتان 95)",
+                                                                priceUSD: "0.85",
+                                                                priceSYP: benzenePrice,
+                                                                icon: <IconRenderer icon={Icons.Fuel} />,
+                                                                iconColor: "text-orange-500 dark:text-orange-400",
+                                                                stats: usdRate.stats
+                                                            })}
                                                         />
                                                         <EnergyCard
                                                             title="المازوت (الديزل)"
@@ -1693,6 +1810,14 @@
                                                             icon={<IconRenderer icon={Icons.Droplet} />}
                                                             iconColor="text-blue-500 dark:text-blue-400"
                                                             stats={usdRate.stats}
+                                                            onClick={() => setSelectedEnergy({
+                                                                title: "المازوت (الديزل)",
+                                                                priceUSD: "0.75",
+                                                                priceSYP: dieselPrice,
+                                                                icon: <IconRenderer icon={Icons.Droplet} />,
+                                                                iconColor: "text-blue-500 dark:text-blue-400",
+                                                                stats: usdRate.stats
+                                                            })}
                                                         />
                                                     </>
                                                 );
@@ -1727,6 +1852,7 @@
                         </div>
                         {selectedCurrency && <CurrencyDetailModal currency={selectedCurrency} onClose={() => setSelectedCurrency(null)} onMove={handleMoveCard} time={dbLastUpdate} />}
                         {selectedGoldCard && <GoldDetailModal gold={selectedGoldCard} onClose={() => setSelectedGoldCard(null)} onMove={handleMoveGold} time={dbLastUpdate} />}
+                        {selectedEnergy && <EnergyDetailModal energy={selectedEnergy} onClose={() => setSelectedEnergy(null)} time={dbLastUpdate} />}
                     </div>
                 );
             };
