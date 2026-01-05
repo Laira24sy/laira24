@@ -1350,8 +1350,8 @@
                                     <IconRenderer icon={Icons.Chart} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight mb-1">الحاسبة والتحليل</h3>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold opacity-80">تحليل دقيق للعملات والذهب وحساب فوري</p>
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight mb-1">حاسبة تحليل العملات</h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold opacity-80">تحليل دقيق للعملات وحساب فوري للأسعار</p>
                                 </div>
                             </div>
 
@@ -1801,16 +1801,19 @@
                         <div className="px-4 pt-4">
                             {loading ? <div className="text-center py-10 text-gray-400">جاري التحميل...</div> : (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div className="mb-8">
                                         <TransferOverviewCard setActiveTab={setActiveTab} />
-                                        <CalcOverviewCard setActiveTab={setActiveTab} />
                                     </div>
                                     <div className="flex justify-between items-center mb-2 px-1"><span className="font-bold text-gray-700 dark:text-gray-200">العملات المفضلة</span><span className="text-xs text-brand-primary bg-brand-primary/10 px-2 py-1 rounded-full flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse"></span>مباشر</span></div>
-                                    <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                    <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 mb-8">
                                         {visibleCurrencies.length > 0 ? visibleCurrencies.map((c, i) => {
                                             const { flag } = getFlagAndCode(c.name);
                                             return <RateCard key={c.code} title={c.name} buy={c.buy_price} sell={c.sell_price} icon={flag} code={c.code} stats={c.stats} onClick={() => setSelectedCurrency(c)} draggable={true} onDragStart={() => (dragItem.current = i)} onDragEnter={() => (dragOverItem.current = i)} onDragEnd={handleSort} />;
                                         }) : <div className="col-span-full text-center py-8 text-gray-400 text-sm">لا توجد عملات مثبتة.</div>}
+                                    </div>
+
+                                    <div className="mb-8">
+                                        <CalcOverviewCard setActiveTab={setActiveTab} />
                                     </div>
 
                                     {showEnergy && (() => {
