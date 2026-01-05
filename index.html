@@ -1280,24 +1280,24 @@
         };
 
         const SplashScreen = () => (
-            <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020b00] overflow-hidden">
-                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,_#163300_0%,_transparent_50%)] animate-pulse" style={{ animationDuration: '4s' }}></div>
+            <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-[#020b00] overflow-hidden transition-colors duration-500">
+                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,_rgba(46,208,110,0.1)_0%,_transparent_50%)] dark:bg-[radial-gradient(circle_at_center,_#163300_0%,_transparent_50%)] animate-pulse" style={{ animationDuration: '4s' }}></div>
 
                 <div className="relative z-10 flex flex-col items-center animate-in fade-in zoom-in duration-1000">
                     <div className="relative w-32 h-32 mb-8 flex items-center justify-center" style={{ animation: 'float 6s ease-in-out infinite' }}>
                         <div className="absolute inset-0 bg-[#2ed06e] rounded-[2rem] rotate-12 opacity-20 blur-xl animate-pulse"></div>
                         <div className="absolute inset-0 bg-[#2ed06e] rounded-[2rem] rotate-6 opacity-40 blur-md"></div>
-                        <div className="relative w-full h-full bg-[#163300] rounded-[2rem] border-2 border-[#2ed06e] flex items-center justify-center shadow-2xl overflow-hidden group">
+                        <div className="relative w-full h-full bg-white dark:bg-[#163300] rounded-[2rem] border-2 border-[#2ed06e] flex items-center justify-center shadow-xl dark:shadow-2xl overflow-hidden group transition-colors duration-500">
                             <span className="text-[#2ed06e] font-black text-5xl relative z-10">24</span>
                             <div className="absolute inset-0 bg-gradient-to-tr from-[#2ed06e]/20 to-transparent"></div>
                             <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#9fe870] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                         </div>
                     </div>
 
-                    <h1 className="text-5xl font-black text-white mb-2 tracking-tight">الليرة <span className="text-[#2ed06e]">24</span></h1>
-                    <p className="text-[#9fe870] text-sm font-medium opacity-80 mb-12 tracking-wide border-b border-[#2ed06e]/30 pb-2">أسعار الذهب والعملات لحظة بلحظة</p>
+                    <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 tracking-tight transition-colors duration-500">الليرة <span className="text-[#2ed06e]">24</span></h1>
+                    <p className="text-[#2ed06e] dark:text-[#9fe870] text-sm font-medium opacity-100 dark:opacity-80 mb-12 tracking-wide border-b border-[#2ed06e]/30 pb-2 transition-colors duration-500">أسعار الذهب والعملات لحظة بلحظة</p>
 
-                    <div className="w-48 h-1.5 bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
+                    <div className="w-48 h-1.5 bg-gray-200 dark:bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-gray-300/20 dark:border-white/5 transition-colors duration-500">
                         <div className="h-full bg-gradient-to-r from-[#2ed06e] to-[#9fe870] w-full animate-[loading_2.5s_ease-in-out] origin-left"></div>
                     </div>
                 </div>
