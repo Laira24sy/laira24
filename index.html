@@ -1652,6 +1652,7 @@
             const [transferFeeType, setTransferFeeType] = useState('add'); // enum: deduct, add
             const [transferStep, setTransferStep] = useState(1); // 1: Calc, 2: Wallet, 3: Form
             const [transferForm, setTransferForm] = useState({ city: '', name: '', mobile: '', notes: '' });
+            const [transferReceiveCurrency, setTransferReceiveCurrency] = useState('SYP'); // New: SYP or USD
 
             const dragItem = useRef();
             const dragOverItem = useRef();
@@ -2414,6 +2415,7 @@
                 ];
 
                 const activeService = services.find(s => s.id === transferService) || services[0];
+                const isMoneyTransfer = transferService === 'global' || transferService === 'sham';
                 // --- Calculator Logic ---
                 // Base Rate is USD Buying Price
                 const baseUsdRate = currencyData.find(c => c.name.includes('دولار'))?.buy_price || 15000;
@@ -2507,14 +2509,19 @@
                     }
 
                     const serviceName = activeService.title;
+                    const receiveText = isMoneyTransfer && transferReceiveCurrency === 'USD'
+                        ? `${calcDetails.net.toFixed(2)} دولار أمريكي`
+                        : `${(transferDirection === 'USDT_SYP' ? (calcDetails.net * effectiveRate) : calcDetails.amount).toLocaleString()} ل.س`;
+
                     const message = `
                         🔔 *طلب تحويل جديد* (${serviceName})
                         
                         💰 *تفاصيل العملية:*
                         - المبلغ المرسل (USDT): ${calcDetails.total.toFixed(2)} USDT
-                        - المبلغ الواصل (SYP): ${(transferDirection === 'USDT_SYP' ? (calcDetails.net * effectiveRate) : calcDetails.amount).toLocaleString()} ل.س
+                        - المبلغ الواصل: ${receiveText}
                         ${!isTelecom ? `- سعر الصرف المعتمد: ${effectiveRate.toLocaleString()} ل.س` : ''}
                         ${!isTelecom ? `- الرسوم (2%): ${calcDetails.fee.toFixed(2)} USDT` : ''}
+                        ${isMoneyTransfer ? `- عملة الاستلام: ${transferReceiveCurrency === 'USD' ? 'دولار أمريكي (USDT)' : 'ليرة سورية'}` : ''}
                         
                         👤 *بيانات المستلم:*
                         - الاسم: ${transferForm.name}
@@ -2585,6 +2592,17 @@
                                             </div>
                                         </div>
 
+                                        {/* New Currency Selection for Money Transfer */}
+                                        {isMoneyTransfer && (
+                                            <div className="flex items-center justify-between mb-4 mt-[-10px]">
+                                                <label className="text-sm text-gray-500 font-semibold">عملة الاستلام</label>
+                                                <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-1 flex text-[10px] font-bold">
+                                                    <button onClick={() => setTransferReceiveCurrency('SYP')} className={`px-3 py-1 rounded-md transition-all ${transferReceiveCurrency === 'SYP' ? 'bg-white dark:bg-gray-600 shadow text-brand-dark dark:text-white' : 'text-gray-400'}`}>ليرة سورية</button>
+                                                    <button onClick={() => setTransferReceiveCurrency('USD')} className={`px-3 py-1 rounded-md transition-all ${transferReceiveCurrency === 'USD' ? 'bg-white dark:bg-gray-600 shadow text-brand-dark dark:text-white' : 'text-gray-400'}`}>دولار (USD)</button>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {/* Amount Input */}
                                         <div className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-4 border border-gray-200 dark:border-gray-600 focus-within:border-brand-primary transition-colors">
                                             <label className="text-xs text-gray-400 font-bold mb-1 block">المبلغ ({transferDirection === 'USDT_SYP' ? 'USDT' : 'الليرة السورية'})</label>
@@ -2615,11 +2633,13 @@
                                         <div className="bg-brand-bg dark:bg-gray-900/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600 space-y-2 mb-6">
                                             {!isTelecom && (
                                                 <>
-                                                    <div className="flex justify-between text-xs text-gray-500">
-                                                        <span>سعر الصرف المعتمد</span>
-                                                        <span className="font-bold num-en">{effectiveRate.toLocaleString()}</span>
-                                                    </div>
-                                                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                                                    {transferReceiveCurrency === 'SYP' && (
+                                                        <div className="flex justify-between text-xs text-gray-500">
+                                                            <span>سعر الصرف المعتمد</span>
+                                                            <span className="font-bold num-en">{effectiveRate.toLocaleString()}</span>
+                                                        </div>
+                                                    )}
+                                                    <div className={`flex justify-between text-xs text-gray-500 ${transferReceiveCurrency === 'SYP' ? 'mt-2' : ''}`}>
                                                         <span>الرسوم (2%)</span>
                                                         <span className="font-bold num-en text-red-500">{calcDetails.fee.toFixed(2)} USDT</span>
                                                     </div>
@@ -2628,14 +2648,17 @@
                                             )}
 
                                             <div className="flex justify-between items-center">
-                                                <span className="font-bold text-brand-dark dark:text-white text-sm">سيتم استلام ({isTelecom ? 'رصيد' : 'كاش'})</span>
+                                                <span className="font-bold text-brand-dark dark:text-white text-sm">سيتم استلام ({isTelecom ? 'رصيد' : (isMoneyTransfer && transferReceiveCurrency === 'USD' ? 'دولار' : 'كاش')})</span>
                                                 <div className="text-right">
                                                     <span className="block text-xl font-black text-brand-primary num-en">
-                                                        {transferDirection === 'USDT_SYP'
-                                                            ? (calcDetails.net * effectiveRate).toLocaleString()
-                                                            : calcDetails.amount.toLocaleString()}
+                                                        {isMoneyTransfer && transferReceiveCurrency === 'USD'
+                                                            ? calcDetails.net.toFixed(2)
+                                                            : (transferDirection === 'USDT_SYP'
+                                                                ? (calcDetails.net * effectiveRate).toLocaleString()
+                                                                : calcDetails.amount.toLocaleString())
+                                                        }
                                                     </span>
-                                                    <span className="text-[10px] text-gray-400 font-bold">ليرة سورية</span>
+                                                    <span className="text-[10px] text-gray-400 font-bold">{isMoneyTransfer && transferReceiveCurrency === 'USD' ? 'USDT / USD' : 'ليرة سورية'}</span>
                                                 </div>
                                             </div>
                                             {transferDirection === 'SYP_USDT' && (
