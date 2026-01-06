@@ -663,7 +663,7 @@
                         width: '1080px',
                         height: '1080px', // Instagram Square
                         zIndex: -1,
-                        background: 'linear-gradient(145deg, #020b00 0%, #0a1f00 40%, #163300 100%)',
+                        background: '#f8fafc',
                         fontFamily: "'Cairo', sans-serif",
                         direction: 'rtl',
                         display: 'flex',
@@ -672,98 +672,94 @@
                     }}
                 >
                     {/* Abstract Modern Background */}
-                    <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 opacity-40">
                         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-                                    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                                    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="1" />
                                 </pattern>
                             </defs>
                             <rect width="100%" height="100%" fill="url(#grid)" />
                         </svg>
                     </div>
 
-                    {/* Glow Orbs */}
-                    <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-brand-primary rounded-full blur-[150px] opacity-10"></div>
-                    <div className="absolute bottom-[-200px] right-[-200px] w-[700px] h-[700px] bg-brand-light rounded-full blur-[150px] opacity-10"></div>
+                    {/* Glow Orbs - Subtle Primary Accents */}
+                    <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-brand-primary/10 rounded-full blur-[150px]"></div>
+                    <div className="absolute bottom-[-200px] right-[-200px] w-[700px] h-[700px] bg-brand-light/20 rounded-full blur-[150px]"></div>
 
                     {/* Header */}
                     <div className="flex justify-between items-center p-12 relative z-10">
                         <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-brand-primary rounded-2xl flex items-center justify-center shadow-lg shadow-brand-primary/30">
-                                <span className="text-brand-dark font-black text-3xl">24</span>
+                            <div className="w-16 h-16 bg-brand-dark rounded-2xl flex items-center justify-center shadow-lg shadow-brand-dark/20">
+                                <span className="text-brand-primary font-black text-3xl">24</span>
                             </div>
                             <div className="flex flex-col">
-                                {/* Removed tracking-wide to fix Arabic disjointed letters */}
-                                <h1 className="text-white text-3xl font-black leading-none mb-1">الليرة 24</h1>
-                                <span className="text-brand-primary text-sm tracking-[0.2em] uppercase opacity-80 font-bold">Lira 24 App</span>
+                                <h1 className="text-brand-dark text-3xl font-black leading-none mb-1">الليرة 24</h1>
+                                <span className="text-brand-primary text-sm tracking-[0.2em] uppercase font-bold">Lira 24 App</span>
                             </div>
                         </div>
-                        {/* Fixed Date Alignment: Increased padding bottom to lift text */}
-                        <div className="bg-white/5 backdrop-blur-md border border-white/10 px-8 py-3 rounded-full flex items-center justify-center h-16">
-                            <span className="text-gray-300 font-bold text-xl num-en leading-none pb-2">{formatDateForExport(time)}</span>
+                        <div className="bg-white px-8 py-3 rounded-full flex items-center justify-center h-16 shadow-sm border border-gray-100">
+                            <span className="text-brand-dark font-bold text-xl num-en leading-none pb-2">{formatDateForExport(time)}</span>
                         </div>
                     </div>
 
                     {/* Main Content Centered */}
                     <div className="flex-1 flex flex-col items-center justify-center relative z-10 px-12 -mt-10">
 
-                        {/* Huge Icon Circle - FIXED ALIGNMENT: Increased pb to lift icon */}
+                        {/* Huge Icon Circle */}
                         <div className="mb-14 relative">
-                            <div className="w-48 h-48 rounded-full bg-gradient-to-b from-white/10 to-transparent border border-white/10 flex items-center justify-center text-[8rem] shadow-[0_0_60px_rgba(46,208,110,0.1)] backdrop-blur-sm relative z-10 leading-none pb-16">
+                            <div className="w-48 h-48 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[8rem] shadow-xl relative z-10 leading-none pb-16">
                                 {icon}
                             </div>
                             {/* Floating Code Badge */}
-                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-brand-primary text-brand-dark font-black text-2xl px-8 py-2 rounded-xl shadow-xl z-20 border-4 border-[#163300]">
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-brand-primary text-brand-dark font-black text-2xl px-8 py-2 rounded-xl shadow-xl z-20 border-4 border-white">
                                 {code}
                             </div>
                         </div>
 
-                        {/* Titles - Increased Spacing to Prevent Overlap */}
+                        {/* Titles */}
                         <div className="text-center mb-20 flex flex-col gap-6">
-                            <h2 className="text-white text-6xl font-black drop-shadow-lg leading-tight">{title}</h2>
-                            <p className="text-gray-400 text-3xl font-medium">{subTitle}</p>
+                            <h2 className="text-brand-dark text-6xl font-black drop-shadow-sm leading-tight">{title}</h2>
+                            <p className="text-gray-500 text-3xl font-bold">{subTitle}</p>
                         </div>
 
-                        {/* Prices Grid - Improved Alignment */}
+                        {/* Prices Grid */}
                         <div className="flex gap-8 w-full max-w-5xl px-8">
                             {/* Sell Card */}
-                            <div className="flex-1 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-[3rem] p-8 flex flex-col items-center justify-center relative overflow-hidden backdrop-blur-lg min-h-[280px]">
-                                <div className="absolute top-0 left-0 w-full h-3 bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]"></div>
+                            <div className="flex-1 bg-white border border-gray-100 rounded-[3rem] p-8 flex flex-col items-center justify-center relative overflow-hidden shadow-lg min-h-[280px]">
+                                <div className="absolute top-0 left-0 w-full h-3 bg-red-500"></div>
 
                                 <div className="flex flex-col items-center justify-center h-full gap-4">
-                                    <div className="flex items-center gap-3 bg-red-500/10 px-4 py-2 rounded-full border border-red-500/20 mb-2">
+                                    <div className="flex items-center gap-3 bg-red-50 px-4 py-2 rounded-full border border-red-100 mb-2">
                                         <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                        {/* Fixed Label Alignment: Increased pb to lift text */}
-                                        <span className="text-gray-300 text-2xl font-bold leading-none pb-3">{sellLabel || "سعر المبيع"}</span>
+                                        <span className="text-red-700 text-2xl font-bold leading-none pb-3">{sellLabel || "سعر المبيع"}</span>
                                     </div>
 
                                     <div className="flex items-baseline justify-center">
-                                        <span className="text-white text-8xl font-black num-en tracking-tighter drop-shadow-md">
+                                        <span className="text-brand-dark text-8xl font-black num-en tracking-tighter">
                                             {sellPrefix !== undefined ? sellPrefix : (isUsd ? '$' : '')}{parseFloat(sell).toLocaleString('en-US')}
                                         </span>
                                     </div>
-                                    {isGold && <span className="text-gray-500 text-lg mt-6">ليرة سورية / غرام</span>}
+                                    {isGold && <span className="text-gray-400 text-lg mt-6 font-bold">ليرة سورية / غرام</span>}
                                 </div>
                             </div>
 
                             {/* Buy Card */}
-                            <div className="flex-1 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-[3rem] p-8 flex flex-col items-center justify-center relative overflow-hidden backdrop-blur-lg min-h-[280px]">
-                                <div className="absolute top-0 left-0 w-full h-3 bg-brand-primary shadow-[0_0_20px_rgba(46,208,110,0.5)]"></div>
+                            <div className="flex-1 bg-white border border-gray-100 rounded-[3rem] p-8 flex flex-col items-center justify-center relative overflow-hidden shadow-lg min-h-[280px]">
+                                <div className="absolute top-0 left-0 w-full h-3 bg-brand-primary"></div>
 
                                 <div className="flex flex-col items-center justify-center h-full gap-4">
                                     <div className="flex items-center gap-3 bg-brand-primary/10 px-4 py-2 rounded-full border border-brand-primary/20 mb-2">
                                         <div className="w-3 h-3 rounded-full bg-brand-primary"></div>
-                                        {/* Fixed Label Alignment: Increased pb to lift text */}
-                                        <span className="text-brand-light text-2xl font-bold leading-none pb-3">{buyLabel || "سعر الشراء"}</span>
+                                        <span className="text-brand-dark text-2xl font-bold leading-none pb-3">{buyLabel || "سعر الشراء"}</span>
                                     </div>
 
                                     <div className="flex items-baseline justify-center">
-                                        <span className="text-brand-primary text-8xl font-black num-en tracking-tighter drop-shadow-[0_0_15px_rgba(46,208,110,0.4)]">
+                                        <span className="text-brand-primary text-8xl font-black num-en tracking-tighter drop-shadow-sm">
                                             {buyPrefix !== undefined ? buyPrefix : (isUsd ? '$' : '')}{parseFloat(buy).toLocaleString('en-US')}
                                         </span>
                                     </div>
-                                    {isGold && <span className="text-gray-500 text-lg mt-6">ليرة سورية / غرام</span>}
+                                    {isGold && <span className="text-gray-400 text-lg mt-6 font-bold">ليرة سورية / غرام</span>}
                                 </div>
                             </div>
                         </div>
@@ -771,26 +767,26 @@
 
                     {/* Footer Bar */}
                     <div className="p-12 relative z-10 mt-auto">
-                        <div className="bg-black/30 backdrop-blur-xl rounded-3xl p-8 border border-white/5 flex justify-between items-center">
+                        <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 flex justify-between items-center">
 
-                            {/* Telegram Link - Improved Alignment */}
+                            {/* Telegram Link */}
                             <div className="flex items-center gap-5">
-                                <div className="bg-[#229ED9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 rotate-3">
+                                <div className="bg-[#229ED9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/10 rotate-3">
                                     <svg viewBox="0 0 24 24" fill="white" width="36" height="36"><path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"></path></svg>
                                 </div>
                                 <div className="flex flex-col justify-center">
-                                    <p className="text-gray-400 text-xl font-bold mb-1">تابعنا على تيليجرام</p>
-                                    <p className="text-white text-3xl font-black tracking-wider num-en leading-none">t.me/Lairas24</p>
+                                    <p className="text-gray-500 text-xl font-bold mb-1">تابعنا على تيليجرام</p>
+                                    <p className="text-brand-dark text-3xl font-black tracking-wider num-en leading-none">t.me/Lairas24</p>
                                 </div>
                             </div>
 
                             {/* App Call to Action */}
-                            <div className="flex items-center gap-6 border-r-2 border-white/10 pr-8">
+                            <div className="flex items-center gap-6 border-r-2 border-gray-100 pr-8">
                                 <div className="text-left flex flex-col justify-center">
                                     <p className="text-brand-primary text-2xl font-black leading-tight">حمل التطبيق الآن</p>
-                                    <p className="text-gray-400 text-base">متوفر على كافة المتاجر</p>
+                                    <p className="text-gray-500 text-base font-bold">متوفر على كافة المتاجر</p>
                                 </div>
-                                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg -rotate-3">
+                                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 -rotate-3">
                                     <img src="./assets/icon.png" alt="App" className="w-12 h-12 object-contain" onError={(e) => e.target.style.display = 'none'} />
                                 </div>
                             </div>
