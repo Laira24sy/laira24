@@ -502,7 +502,8 @@
             Copy: () => <i data-lucide="copy" className="w-4 h-4"></i>,
             Fuel: () => <i data-lucide="fuel" className="w-6 h-6"></i>,
             Droplet: () => <i data-lucide="droplet" className="w-6 h-6"></i>,
-            Flame: () => <i data-lucide="flame" className="w-6 h-6"></i>
+            Flame: () => <i data-lucide="flame" className="w-6 h-6"></i>,
+            News: () => <i data-lucide="newspaper" className="w-6 h-6"></i>
         };
 
         const IconRenderer = ({ icon }) => {
@@ -1475,11 +1476,11 @@
                         {activeTab === 'home' && <span className="absolute bottom-2 w-1.5 h-1.5 bg-brand-primary rounded-full animate-in zoom-in duration-300"></span>}
                     </button>
 
-                    <button onClick={() => setActiveTab('calc')} className={`relative flex flex-col items-center justify-center w-14 h-full rounded-2xl transition-all duration-500 group ${activeTab === 'calc' ? 'text-brand-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}>
-                        <div className={`transition-transform duration-300 ${activeTab === 'calc' ? '-translate-y-1' : 'group-active:scale-90'}`}>
-                            <IconRenderer icon={Icons.Chart} />
+                    <button onClick={() => setActiveTab('global')} className={`relative flex flex-col items-center justify-center w-14 h-full rounded-2xl transition-all duration-500 group ${activeTab === 'global' ? 'text-brand-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}>
+                        <div className={`transition-transform duration-300 ${activeTab === 'global' ? '-translate-y-1' : 'group-active:scale-90'}`}>
+                            <IconRenderer icon={Icons.Globe} />
                         </div>
-                        {activeTab === 'calc' && <span className="absolute bottom-2 w-1.5 h-1.5 bg-brand-primary rounded-full animate-in zoom-in duration-300"></span>}
+                        {activeTab === 'global' && <span className="absolute bottom-2 w-1.5 h-1.5 bg-brand-primary rounded-full animate-in zoom-in duration-300"></span>}
                     </button>
 
                     <div className="relative -top-6">
@@ -1489,11 +1490,11 @@
                         </button>
                     </div>
 
-                    <button onClick={() => setActiveTab('global')} className={`relative flex flex-col items-center justify-center w-14 h-full rounded-2xl transition-all duration-500 group ${activeTab === 'global' ? 'text-brand-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}>
-                        <div className={`transition-transform duration-300 ${activeTab === 'global' ? '-translate-y-1' : 'group-active:scale-90'}`}>
-                            <IconRenderer icon={Icons.Globe} />
+                    <button onClick={() => setActiveTab('news')} className={`relative flex flex-col items-center justify-center w-14 h-full rounded-2xl transition-all duration-500 group ${activeTab === 'news' ? 'text-brand-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}>
+                        <div className={`transition-transform duration-300 ${activeTab === 'news' ? '-translate-y-1' : 'group-active:scale-90'}`}>
+                            <IconRenderer icon={Icons.News} />
                         </div>
-                        {activeTab === 'global' && <span className="absolute bottom-2 w-1.5 h-1.5 bg-brand-primary rounded-full animate-in zoom-in duration-300"></span>}
+                        {activeTab === 'news' && <span className="absolute bottom-2 w-1.5 h-1.5 bg-brand-primary rounded-full animate-in zoom-in duration-300"></span>}
                     </button>
 
                     <button onClick={() => setActiveTab('settings')} className={`relative flex flex-col items-center justify-center w-14 h-full rounded-2xl transition-all duration-500 group ${activeTab === 'settings' ? 'text-brand-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}>
@@ -1712,23 +1713,6 @@
             useEffect(() => { if (goldData.length > 0 && !selectedGoldId) setSelectedGoldId(goldData[0].id || goldData[0].description); }, [goldData]);
 
             useEffect(() => {
-                if (goldData.length > 0 && pinnedGold.length === 0 && !localStorage.getItem('pinnedGold')) {
-                    const ounce = goldData.find(g => g.description.includes('أونصة') || g.description.includes('Ounce'));
-                    const k24 = goldData.find(g => g.description.includes('24'));
-                    const k21 = goldData.find(g => g.description.includes('21'));
-                    const k18 = goldData.find(g => g.description.includes('18'));
-
-                    const defaultPinned = [ounce, k24, k21, k18]
-                        .filter(Boolean)
-                        .map(g => g.description);
-
-                    if (defaultPinned.length > 0) {
-                        setPinnedGold(defaultPinned);
-                    }
-                }
-            }, [goldData]);
-
-            useEffect(() => {
                 if (calcSource) {
                     const base = parseFloat(calcSource[calcMode === 'sell' ? 'sell_price' : 'buy_price']);
                     let points = 24, volatility = 0.01;
@@ -1777,10 +1761,40 @@
                 setCurrencyData(enrichedCurrencies);
                 setGoldData(enrichedGold);
 
+                const currentGoldDescriptions = enrichedGold.map(g => g.description);
+
+                // Initialize pinnedGold if first time
+                if (!localStorage.getItem('pinnedGold')) {
+                    const ounce = enrichedGold.find(g => g.description.includes('أونصة') || g.description.includes('Ounce'));
+                    const k24 = enrichedGold.find(g => g.description.includes('24'));
+                    const k21 = enrichedGold.find(g => g.description.includes('21'));
+                    const k18 = enrichedGold.find(g => g.description.includes('18'));
+
+                    const topFour = [ounce, k24, k21, k18].filter(Boolean).map(g => g.description);
+                    const others = currentGoldDescriptions.filter(desc => !topFour.includes(desc));
+                    const allDefault = [...topFour, ...others];
+
+                    if (allDefault.length > 0) {
+                        setPinnedGold(allDefault);
+                    }
+                }
+
                 setGoldOrder(prevOrder => {
-                    const currentDescriptions = enrichedGold.map(g => g.description);
-                    let validOrder = prevOrder.filter(d => currentDescriptions.includes(d));
-                    const newItems = currentDescriptions.filter(d => !validOrder.includes(d));
+                    let validOrder = prevOrder.filter(d => currentGoldDescriptions.includes(d));
+                    const newItems = currentGoldDescriptions.filter(d => !validOrder.includes(d));
+
+                    if (prevOrder.length === 0) {
+                        // First time: use requested order
+                        const ounce = enrichedGold.find(g => g.description.includes('أونصة') || g.description.includes('Ounce'));
+                        const k24 = enrichedGold.find(g => g.description.includes('24'));
+                        const k21 = enrichedGold.find(g => g.description.includes('21'));
+                        const k18 = enrichedGold.find(g => g.description.includes('18'));
+
+                        const topFour = [ounce, k24, k21, k18].filter(Boolean).map(g => g.description);
+                        const others = currentGoldDescriptions.filter(desc => !topFour.includes(desc));
+                        return [...topFour, ...others];
+                    }
+
                     const ounceItem = newItems.find(d => d.includes('أونصة') || d.includes('Ounce'));
                     const otherNewItems = newItems.filter(d => d !== ounceItem);
                     let finalOrder = [...validOrder];
@@ -2153,9 +2167,14 @@
                         }
                     });
                 }
+                const visibleGlobalItems = globalOrder.filter(k => k !== baseCurrency).map(k => {
+                    const rate = globalRawData ? globalRawData[k].value : 0;
+                    return { code: k, rate, ...GLOBAL_DISPLAY_MAP[k] };
+                });
+
                 return (
                     <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
-                        <Header title="الأسعار العالمية" subtitle="تحويل وحاسبة فورية" time={apiLastUpdate} showBack={true} onBack={() => setActiveTab('home')} setActiveTab={setActiveTab} loadData={loadData} />
+                        <Header title="الأسعار العالمية" subtitle={`1 دولار أمريكي (USD) مقابل`} time={apiLastUpdate} showBack={true} onBack={() => setActiveTab('home')} setActiveTab={setActiveTab} loadData={loadData} />
                         <div className="px-4 pt-4">
                             <div className="glass-card rounded-2xl shadow-lg p-5 mb-8 relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary"></div>
@@ -2170,22 +2189,17 @@
                                 </div>
                                 <div className="bg-brand-bg dark:bg-gray-900/50 rounded-xl p-3 flex flex-col items-center justify-center border border-dashed border-gray-300 dark:border-gray-600"><span className="text-xs text-gray-400">النتيجة التقديرية</span><div className="text-2xl font-bold text-brand-dark dark:text-brand-primary num-en mt-1">{convResult.toLocaleString('en-US', { maximumFractionDigits: 2 })} <span className="text-xs ml-1 text-gray-500">{convTo}</span></div></div>
                             </div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-bold text-gray-700 dark:text-gray-200">قائمة الأسعار</h3>
-                                <div className="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-0.5">
-                                    <button onClick={() => setBaseCurrency('USD')} className={`px-3 py-1 rounded-md text-xs font-bold transition ${baseCurrency === 'USD' ? 'bg-white dark:bg-gray-600 shadow text-brand-dark dark:text-white' : 'text-gray-500'}`}>USD ($)</button>
-                                    <button onClick={() => setBaseCurrency('EUR')} className={`px-3 py-1 rounded-md text-xs font-bold transition ${baseCurrency === 'EUR' ? 'bg-white dark:bg-gray-600 shadow text-brand-dark dark:text-white' : 'text-gray-500'}`}>EUR (€)</button>
-                                </div>
-                            </div>
-                            {globalLoading && !globalRawData ? <SkeletonList count={6} /> : (
+
+                            {globalLoading ? <SkeletonList count={6} /> : (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
-                                        {displayList.map((curr, i) => (
+                                    <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                        {visibleGlobalItems.map((curr, i) => (
                                             <RateCard
                                                 key={curr.code}
                                                 title={curr.name}
-                                                buy={curr.buy}
-                                                sell={curr.sell}
+                                                buy={curr.rate}
+                                                sell={curr.rate}
+                                                isUsd={false}
                                                 icon={curr.flag}
                                                 code={curr.code}
                                                 draggable={true}
@@ -2198,6 +2212,42 @@
                                     <p className="text-center text-xs text-gray-400 mt-4">الأسعار عالمية ويتم تحديثها كل 45 دقيقة.</p>
                                 </>
                             )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderNews = () => {
+                const newsItems = [
+                    { id: 1, title: "استقرار في أسعار الذهب محلياً", date: "منذ ساعتين", image: "🏆", summary: "شهدت أسواق دمشق اليوم استقراراً ملحوظاً في أسعار الغرام من عيار 21 قيراط..." },
+                    { id: 2, title: "توقعات أداء الدولار الأمريكي للأسبوع القادم", date: "منذ 5 ساعات", image: "💵", summary: "المحللون الاقتصاديون يتوقعون تحركاً طفيفاً في مؤشر الدولار العالمي تأثراً ببيانات التضخم..." },
+                    { id: 3, title: "تحديثات جديدة في رسوم الحوالات المالية", date: "اليوم", image: "💠", summary: "أعلنت كبرى شركات الصرافة عن تحديث نسب الرسوم والعمولات للتحويلات الصادرة والواردة..." },
+                    { id: 4, title: "تذبذب أسعار النفط العالمية وأثره على الطاقة", date: "أمس", image: "⛽", summary: "انعكاسات أسعار برنت العالمية على سوق المحروقات المحلية وتوقعات الفترة القادمة..." }
+                ];
+
+                return (
+                    <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+                        <Header title="أخبار الليرة" subtitle="أحدث التطورات الاقتصادية" time={dbLastUpdate} showBack={true} onBack={() => setActiveTab('home')} setActiveTab={setActiveTab} loadData={loadData} />
+                        <div className="px-4 pt-4 space-y-4">
+                            {newsItems.map(item => (
+                                <div key={item.id} className="glass-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group cursor-pointer">
+                                    <div className="flex p-4 gap-4">
+                                        <div className="w-20 h-20 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-3xl shrink-0 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                                            {item.image}
+                                        </div>
+                                        <div className="flex flex-col justify-between">
+                                            <div>
+                                                <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm mb-1 leading-tight">{item.title}</h3>
+                                                <p className="text-[10px] text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{item.summary}</p>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-[9px] text-brand-primary font-bold mt-2">
+                                                <IconRenderer icon={Icons.Clock} />
+                                                <span>{item.date}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 );
@@ -2574,25 +2624,25 @@
                         : `${(transferDirection === 'USDT_SYP' ? (calcDetails.net * effectiveRate) : calcDetails.amount).toLocaleString()} ل.س`;
 
                     const message = `
-                        🔔 *طلب تحويل جديد* (${serviceName})
-                        
-                        💰 *تفاصيل العملية:*
-                        - المبلغ المرسل (USDT): ${calcDetails.total.toFixed(2)} USDT
-                        - المبلغ الواصل: ${receiveText}
-                        ${!isTelecom ? `- سعر الصرف المعتمد: ${effectiveRate.toLocaleString()} ل.س` : ''}
-                        ${!isTelecom ? `- الرسوم (2%): ${calcDetails.fee.toFixed(2)} USDT` : ''}
-                        ${isMoneyTransfer ? `- عملة الاستلام: ${transferReceiveCurrency === 'USD' ? 'دولار أمريكي (USDT)' : 'ليرة سورية'}` : ''}
-                        
-                        👤 *بيانات المستلم:*
-                        - الاسم: ${transferForm.name}
-                        - الرقم: ${transferForm.mobile}
-                        ${!isTelecom && transferForm.city ? `- المدينة: ${transferForm.city}` : ''}
-                        
-                        📝 *ملاحظات:* ${transferForm.notes || 'لا يوجد'}
-                        
-                        ----------------------
-                        📎 *يرجى إرفاق صورة الحوالة بعد إرسال هذه الرسالة مباشرة.*
-                    `.replace(/^\s+/gm, '').replace(/^\n\s*\n/gm, '\n');
+                                🔔 *طلب تحويل جديد* (${serviceName})
+
+                                💰 *تفاصيل العملية:*
+                                - المبلغ المرسل (USDT): ${calcDetails.total.toFixed(2)} USDT
+                                - المبلغ الواصل: ${receiveText}
+                                ${!isTelecom ? `- سعر الصرف المعتمد: ${effectiveRate.toLocaleString()} ل.س` : ''}
+                                ${!isTelecom ? `- الرسوم (2%): ${calcDetails.fee.toFixed(2)} USDT` : ''}
+                                ${isMoneyTransfer ? `- عملة الاستلام: ${transferReceiveCurrency === 'USD' ? 'دولار أمريكي (USDT)' : 'ليرة سورية'}` : ''}
+
+                                👤 *بيانات المستلم:*
+                                - الاسم: ${transferForm.name}
+                                - الرقم: ${transferForm.mobile}
+                                ${!isTelecom && transferForm.city ? `- المدينة: ${transferForm.city}` : ''}
+
+                                📝 *ملاحظات:* ${transferForm.notes || 'لا يوجد'}
+
+                                ----------------------
+                                📎 *يرجى إرفاق صورة الحوالة بعد إرسال هذه الرسالة مباشرة.*
+                                `.replace(/^\s+/gm, '').replace(/^\n\s*\n/gm, '\n');
 
                     const url = `https://t.me/Lairas24?text=${encodeURIComponent(message)}`;
                     window.open(url, '_blank');
@@ -2723,7 +2773,7 @@
                                                                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${transferFeeType === 'add' ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 dark:border-gray-600'}`}>
                                                                     {transferFeeType === 'add' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                                                 </div>
-                                                                <span className={`text-xs font-bold ${transferFeeType === 'add' ? 'text-brand-dark dark:text-white' : 'text-gray-500'}`}>إضافة الرسوم فوق المبلغ</span>
+                                                                <span className={`text-xs font-bold ${transferFeeType === 'add' ? 'text-brand-dark dark:text-white' : 'text-gray-500'}`}>إضافة الرسوم فوق المبلغ ودفعه من قبلك</span>
                                                             </div>
                                                             <input type="radio" name="feeType" checked={transferFeeType === 'add'} onChange={() => setTransferFeeType('add')} className="hidden" />
                                                         </label>
@@ -2894,7 +2944,8 @@
                     {activeTab === 'settings' && renderSettings()}
                     {activeTab === 'transfer' && renderTransfer()}
                     {activeTab === 'global' && renderGlobal()}
-                    {activeTab !== 'transfer' && activeTab !== 'settings' && activeTab !== 'gold' && activeTab !== 'calc' && activeTab !== 'global' && <NavBar activeTab={activeTab} setActiveTab={setActiveTab} />}
+                    {activeTab === 'news' && renderNews()}
+                    {(activeTab === 'home' || activeTab === 'global' || activeTab === 'news' || activeTab === 'settings') && <NavBar activeTab={activeTab} setActiveTab={setActiveTab} />}
                 </div>
             );
         }
