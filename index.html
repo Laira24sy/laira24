@@ -1403,26 +1403,28 @@
         const CalcOverviewCard = ({ setActiveTab }) => {
             return (
                 <div className="mb-4 relative group cursor-pointer" onClick={() => setActiveTab('calc')}>
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-light/20 via-brand-light/5 to-transparent border border-brand-light/20 backdrop-blur-md p-6 shadow-xl shadow-brand-light/5 transition-all duration-500 hover:shadow-brand-light/10">
-                        <div className="absolute -right-12 -top-12 w-32 h-32 bg-brand-light/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
+                    <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-primary/30 via-brand-dark/10 to-transparent border border-brand-primary/40 backdrop-blur-xl p-6 shadow-xl shadow-brand-primary/10 transition-all duration-500 hover:shadow-brand-primary/20">
+                        {/* Darker Depth Elements */}
+                        <div className="absolute -right-12 -top-12 w-32 h-32 bg-brand-primary/15 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
+                        <div className="absolute inset-0 bg-brand-dark/5 dark:bg-black/20 pointer-events-none"></div>
 
                         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
                             <div className="flex items-center gap-5">
-                                <div className="w-16 h-16 rounded-3xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-[0_0_20px_rgba(159,232,112,0.2)] flex items-center justify-center text-3xl border border-white/20 dark:border-brand-light/20 relative overflow-hidden theme-icon-bg">
-                                    <div className="absolute inset-0 bg-brand-light/10 dark:bg-brand-light/20 rounded-3xl animate-pulse"></div>
-                                    <div className="relative text-brand-dark dark:text-brand-light">
+                                <div className="w-16 h-16 rounded-3xl bg-brand-dark dark:bg-brand-primary shadow-lg flex items-center justify-center text-3xl border border-white/20 relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-white/10 rounded-3xl animate-pulse"></div>
+                                    <div className="relative text-brand-primary dark:text-brand-dark">
                                         <IconRenderer icon={Icons.Chart} />
                                     </div>
                                 </div>
                                 <div className="flex flex-col">
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight mb-1">حاسبة تحليل العملات</h3>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold opacity-80">تحليل دقيق للعملات وحساب فوري للأسعار</p>
+                                    <h3 className="text-xl font-black text-brand-dark dark:text-white leading-tight mb-1">حاسبة تحليل العملات</h3>
+                                    <p className="text-xs text-gray-800 dark:text-gray-200 font-bold opacity-100">تحليل دقيق للعملات وحساب فوري للأسعار</p>
                                 </div>
                             </div>
 
-                            <button className="bg-white dark:bg-gray-800 text-brand-dark dark:text-white px-6 py-3.5 rounded-2xl font-black text-sm shadow-lg border border-gray-100 dark:border-gray-700 flex items-center justify-center gap-3 hover:bg-brand-primary hover:text-brand-dark transition-all active:scale-95 group-hover:translate-x-[-4px]">
+                            <button className="bg-brand-dark dark:bg-brand-primary text-brand-primary dark:text-brand-dark px-6 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-black/20 flex items-center justify-center gap-3 hover:scale-105 transition-all active:scale-95 group-hover:translate-x-[-4px]">
                                 <span>ابدأ التحليل</span>
-                                <div className="w-5 h-5 bg-brand-dark/10 dark:bg-white/10 rounded-full flex items-center justify-center">
+                                <div className="w-5 h-5 bg-brand-primary/20 dark:bg-brand-dark/20 rounded-full flex items-center justify-center">
                                     <IconRenderer icon={Icons.ArrowLeft} />
                                 </div>
                             </button>
